@@ -1,21 +1,27 @@
-import  dbConnect  from "@/app/api/lib/dbconnect";
+import { createUser } from "./controller";
+import dbConnect from "../lib/dbConnect";
+import { NextResponse } from "next/server";
 
-export async function GET(request) {
+
+export async function GET(req) {
     try {
-        const db = await dbConnect();
-        return new Response(JSON.stringify({ 
-            message: "MongoDB is connected!" 
-        }), {
-            headers: { "Content-Type": "application/json" },
-            status: 200,
-        });
+        await dbConnect();
+        return NextResponse.json({ message: "Database connected successfully" }, { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify({ 
-            message: "Failed to connect to MongoDB", 
-            error: error.message 
-        }), {
-            headers: { "Content-Type": "application/json" },
-            status: 500,
-        });
+        return NextResponse.json({ error: "Failed to connect to the database" }, { status: 500 });
     }
 }
+
+
+export async function POST(req) {
+    try {
+        await dbConnect();
+        const body = await req.json();
+        const user = await createUser(body);
+        return NextResponse.json(user, { status: 201 });
+    } catch (error) {
+        return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+    }
+}
+
+
