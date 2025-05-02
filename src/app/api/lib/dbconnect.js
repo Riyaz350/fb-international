@@ -1,15 +1,52 @@
 import mongoose from "mongoose";
+import config from "./config";
 
 const connection = { isConnected: 0 };
 
 async function dbConnect() {
-    if (connection.isConnected) {
-        return;
+    try {
+        if (connection.isConnected) {
+            console.log('Using existing database connection');
+            return;
+        }
+
+        // Get MongoDB URI from config
+        const mongoUri = process.env.MONGO_URI;
+        
+        if (!mongoUri) {
+            console.error('MongoDB URI is missing. Please check your .env file');
+            throw new Error('MongoDB URI is not defined');
+        }
+
+        console.log('Connecting to MongoDB...');
+        const db = await mongoose.connect(mongoUri);
+        
+        connection.isConnected = db.connections[0].readyState;
+        console.log('MongoDB connected successfully');
+        
+        // Log connection state
+        console.log('Connection state:', {
+            isConnected: connection.isConnected,
+            host: db.connection.host,
+            name: db.connection.name
+        });
+
+        // Handle connection errors
+        db.connection.on('error', (err) => {
+            console.error('MongoDB connection error:', err);
+            connection.isConnected = 0;
+        });
+
+        db.connection.on('disconnected', () => {
+            console.log('MongoDB disconnected');
+            connection.isConnected = 0;
+        });
+
+    } catch (error) {
+        console.error('Database connection error:', error);
+        connection.isConnected = 0;
+        throw error;
     }
-
-    const db = await mongoose.connect(process.env.MONGO_URI);
-
-    connection.isConnected = db.connections[0].readyState;
 }
 
 export default dbConnect;

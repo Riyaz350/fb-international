@@ -6,10 +6,10 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     pin: {
-        type: Number,
+        type: String,
         required: true,
-        minlength: 5,
-        maxlength: 5,
+        min: 9999,
+        max: 10000,
     },
     mobile: {
         type: Number,
@@ -24,12 +24,19 @@ const userSchema = new mongoose.Schema({
     accountType: {
         type: String,
         required: true,
-        enum: ["Agent", "User","Admin"],
+        enum: ["Agent", "User", "Admin"],
     },
     nid: {
         type: Number,
         required: true,
         unique: true,
+    },
+    verified: {
+        type: Boolean,
+        default: false,
+    },
+    token: {
+        type: String,
     },
 });
 

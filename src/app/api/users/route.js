@@ -1,5 +1,5 @@
-import { createUser } from "./controller";
-import dbConnect from "../lib/dbConnect";
+import express from "express";
+import dbConnect from "../lib/dbconnect";
 import { NextResponse } from "next/server";
 
 
@@ -23,5 +23,3 @@ export async function POST(req) {
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
     }
 }
-
-

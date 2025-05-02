@@ -1,17 +1,39 @@
-'use client'
-import Link from 'next/link';
-import React, { useState } from 'react';
+"use client";
+import Link from "next/link";
+import React, { useState } from "react";
 
 const SignIn = () => {
-  const [credentials, setCredentials] = useState({ identifier: '', password: '' });
+  const [credentials, setCredentials] = useState({
+    identifier: "",
+    pin: "",
+  });
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitted:', credentials);
+    try {
+      const response = await fetch("http://localhost:5000/api/v1/users/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to verify credentials");
+      }
+
+      const data = await response.json();
+      if (data.isMatch) {
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Error during verification:", error);
+    }
   };
 
   return (
@@ -20,7 +42,9 @@ const SignIn = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Email or Phone Number</label>
+            <label className="block text-sm font-medium mb-1">
+              Email or Phone Number
+            </label>
             <input
               type="text"
               name="identifier"
@@ -35,7 +59,7 @@ const SignIn = () => {
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
               type="password"
-              name="password"
+              name="pin"
               value={credentials.password}
               onChange={handleChange}
               required
@@ -51,7 +75,10 @@ const SignIn = () => {
           </button>
         </form>
         <p className="mt-4 text-center text-sm">
-          Not registered? <Link href="/signup" className="text-blue-600 hover:underline">Sign Up</Link>
+          Not registered?{" "}
+          <Link href="/signup" className="text-blue-600 hover:underline">
+            Sign Up
+          </Link>
         </p>
       </div>
     </div>
