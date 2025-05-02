@@ -7,9 +7,14 @@ const SignIn = () => {
     identifier: "",
     pin: "",
   });
+  const [errors, setErrors] = useState({
+    identifier: "",
+    pin: "",
+  });
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" }); // Clear error for the specific field
   };
 
   const handleSubmit = async (e) => {
@@ -23,13 +28,14 @@ const SignIn = () => {
         body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to verify credentials");
-      }
-
       const data = await response.json();
-      if (data.isMatch) {
-        window.location.href = "/";
+      if (data.error === "User not found") {
+        setErrors({ identifier: "User not found.", pin: "" });
+      } else if (data.isMatch) {
+        localStorage.setItem("userToken", data.token);
+        window.location.href = "/dashboard";
+      } else {
+        setErrors({ identifier: "", pin: "Wrong Pin. Please try again." });
       }
     } catch (error) {
       console.error("Error during verification:", error);
@@ -54,18 +60,24 @@ const SignIn = () => {
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter email or phone"
             />
+            {errors.identifier && (
+              <p className="text-red-500 text-sm mt-1">{errors.identifier}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
               type="password"
               name="pin"
-              value={credentials.password}
+              value={credentials.pin}
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter password"
             />
+            {errors.pin && (
+              <p className="text-red-500 text-sm mt-1">{errors.pin}</p>
+            )}
           </div>
           <button
             type="submit"
