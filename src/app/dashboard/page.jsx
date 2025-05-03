@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
 import AgentsDashboard from "./AgentsDashboard";
-import AdminDashboard from "./AdminDashboard";
+import AdminDashboard from "./Admin/AdminDashboard";
 export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
