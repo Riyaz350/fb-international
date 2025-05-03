@@ -88,14 +88,35 @@ const AdminDashboard = ({ user }) => {
                                                             );
                                                             const result = await response.json();
                                                             if (result.isMatch) {
-                                                                setPendingAgents((prev) =>
-                                                                    prev.filter((a) => a._id !== agent._id)
+                                                                const verifyResponse = await fetch(
+                                                                    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/verifyAgent`,
+                                                                    {
+                                                                        method: 'POST',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json',
+                                                                        },
+                                                                        body: JSON.stringify({
+                                                                            userId: agent._id,
+                                                                        }),
+                                                                    }
                                                                 );
-                                                                Swal.fire({
-                                                                    icon: 'success',
-                                                                    title: 'Success',
-                                                                    text: 'Agent verified successfully!',
-                                                                });
+                                                                console.log(verifyResponse)
+                                                                if (verifyResponse.ok) {
+                                                                    setPendingAgents((prev) =>
+                                                                        prev.filter((a) => a._id !== agent._id)
+                                                                    );
+                                                                    Swal.fire({
+                                                                        icon: 'success',
+                                                                        title: 'Success',
+                                                                        text: 'Agent verified successfully!',
+                                                                    });
+                                                                } else {
+                                                                    Swal.fire({
+                                                                        icon: 'error',
+                                                                        title: 'Error',
+                                                                        text: 'Failed to verify agent.',
+                                                                    });
+                                                                }
                                                             } else {
                                                                 setPendingAgents((prev) =>
                                                                     prev.map((a) =>
