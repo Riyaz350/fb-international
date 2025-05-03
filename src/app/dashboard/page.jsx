@@ -72,7 +72,7 @@ export default function DashboardPage() {
           <div className="flex flex-col items-center sm:items-start">
             <p className="text-sm">Account Type: {user.accountType}</p>
             <div className="flex flex-col   items-center sm:items-start    ">
-              {user?.accountType !== "Admin" && <p className="text-sm">Balance: ${user.balance}</p>}
+              {user?.accountType !== "Admin" && <p className="text-sm">Balance: {user.balance}tk</p>}
               {(user?.accountType === "Agent" || user?.accountType === "Admin") && (
                 <div className="flex items-center gap-2 justify-center">
                   <p>Income:</p>

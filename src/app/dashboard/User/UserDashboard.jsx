@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 
 const UserDashboard = ({ user }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,10 +15,16 @@ const UserDashboard = ({ user }) => {
     };
 
     const handleSendMoney = async () => {
-         
-
         if (!formValues.mobile || !formValues.balance || !formValues.pin || isNaN(formValues.balance) || formValues.balance <= 0) {
             alert('Please fill all fields with valid values.');
+            return;
+        }
+
+        if (formValues.balance < 50) {
+            Swal.fire({
+                icon: 'error',
+                text: 'Send money must be at least 50 to proceed.',
+            });
             return;
         }
 
@@ -39,22 +46,43 @@ const UserDashboard = ({ user }) => {
             );
 
             if (response.statusText === 'Unauthorized') {
-                alert('Invalid PIN. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid PIN',
+                    text: 'Please try again.',
+                });
                 return;
             }
             if (response.statusText === 'Not Found') {
-                alert('User not found. Please check the mobile number.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'User Not Found',
+                    text: 'Please check the mobile number.',
+                });
                 return;
             }
-            console.log(response)
             if (response.ok) {
-                alert('Your cash-in request has been processed successfully.');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Your send money request has been processed successfully.',
+                    timer: 1000,
+                    timerProgressBar: true,
+                });
+                window.location.reload();
             } else {
-                alert('There was an error processings your request. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was an error processing your request. Please try again.',
+                });
             }
         } catch (error) {
-            console.error(error);
-            alert('There was an error processing your request. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an error processing your request. Please try again.',
+            });
         } finally {
             setIsModalOpen(false);
         }
@@ -97,6 +125,9 @@ const UserDashboard = ({ user }) => {
                             value={formValues.balance}
                             onChange={handleInputChange}
                         />
+                        {formValues.balance && formValues.balance < 50 && (
+                            <p className="text-red-500 text-sm">Balance must be at least 50.</p>
+                        )}
                         <input
                             type="password"
                             name="pin"
