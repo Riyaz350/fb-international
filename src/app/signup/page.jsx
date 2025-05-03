@@ -65,6 +65,8 @@ const SignUp = () => {
       // If no existing data found, proceed with signup
       if (formData.accountType === "Agent") {
         formData.balance = 100000;
+      }else if (formData.accountType === "User") {
+        formData.balance = 40;
       }
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/users`, {

@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
-import AgentsDashboard from "./AgentsDashboard";
+import AgentsDashboard from "./Agent/AgentsDashboard";
 import AdminDashboard from "./Admin/AdminDashboard";
+import UserDashboard from "./User/UserDashboard";
 export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -71,9 +72,9 @@ export default function DashboardPage() {
           <div className="flex flex-col items-center sm:items-start">
             <p className="text-sm">Account Type: {user.accountType}</p>
             <div className="flex flex-col   items-center sm:items-start    ">
-              <p className="text-sm">Balance: ${user.balance}</p>
-              {user?.accountType === "Agent" || user?.accountType === "Admin" && (
-                <div className="flex items-center justify-center">
+              {user?.accountType !== "Admin" && <p className="text-sm">Balance: ${user.balance}</p>}
+              {(user?.accountType === "Agent" || user?.accountType === "Admin") && (
+                <div className="flex items-center gap-2 justify-center">
                   <p>Income:</p>
                   <p
                     className="text-sm cursor-pointer"
@@ -85,7 +86,7 @@ export default function DashboardPage() {
                     }}
                     style={{ filter: "blur(5px)" }}
                   >
-                    ${user.income}
+                     {user.income} TK
                   </p>
                 </div>
               )}
@@ -103,6 +104,7 @@ export default function DashboardPage() {
       <div className="p-6">
         {user.accountType === "Agent" && <AgentsDashboard user={user} />}
         {user.accountType === "Admin" && <AdminDashboard user={user} />}
+        {user.accountType === "User" && <UserDashboard user={user} />}
       </div>
     </div>
   );

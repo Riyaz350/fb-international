@@ -35,7 +35,7 @@ const AdminDashboard = ({ user }) => {
                 className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                 onClick={() => {
                     setShowPendingAgents((prev) => !prev);
-                    setShowAllAgents(false); // Hide all agents when showing pending agents
+                    setShowAllAgents(false);  
                 }}
             >
                 {showPendingAgents ? 'Hide Pending Agents' : 'Show Pending Agents'}
@@ -45,7 +45,7 @@ const AdminDashboard = ({ user }) => {
                 className="py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600 transition ml-4"
                 onClick={() => {
                     setShowAllAgents((prev) => !prev);
-                    setShowPendingAgents(false); // Hide pending agents when showing all agents
+                    setShowPendingAgents(false);  
                 }}
             >
                 {showAllAgents ? 'Hide All Agents' : 'Show All Agents'}
