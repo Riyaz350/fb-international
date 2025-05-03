@@ -38,14 +38,14 @@ const AgentsDashboard = ({ user }) => {
 
         if (balance) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/balanceRequest`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/transaction/balanceRequest`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ userId: user._id, balance: Number(balance) }),
+                    body: JSON.stringify({ userId: user._id, requestedBalance: balance }),
+                    
                 });
-
                 if (response.ok) {
                     Swal.fire({
                         icon: "success",
@@ -56,7 +56,7 @@ const AgentsDashboard = ({ user }) => {
                     Swal.fire({
                         icon: "error",
                         title: "Request Failed",
-                        text: "There was an error submitting your request. Please try again.",
+                        text: "There was an error submittings your request. Please try again.",
                     });
                 }
             } catch (error) {
