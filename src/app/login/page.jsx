@@ -20,7 +20,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/v1/users/verify", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/verifyPin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

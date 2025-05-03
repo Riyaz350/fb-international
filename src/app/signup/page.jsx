@@ -10,6 +10,7 @@ const SignUp = () => {
     email: '',
     accountType: '',
     nid: 0,  
+    balance:0
 });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +31,7 @@ const SignUp = () => {
 
     try {
       // First check if any of the unique fields already exist
-      const checkResponse = await fetch('http://localhost:5000/api/v1/users/check', {
+      const checkResponse = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/check`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +63,11 @@ const SignUp = () => {
       }
 
       // If no existing data found, proceed with signup
-      const response = await fetch('http://localhost:5000/api/v1/users', {
+      if (formData.accountType === "Agent") {
+        formData.balance = 100000;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,9 +81,7 @@ const SignUp = () => {
         setErrors(prev => ({ ...prev, general: data.error || 'Failed to create account' }));
         return;
       }
-
-      // Successful registration
-      // window.location.href = '/login';
+      window.location.href = '/login';
     } catch (error) {
       setErrors(prev => ({ ...prev, general: 'An error occurred. Please try again.' }));
     } finally {
