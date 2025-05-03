@@ -51,6 +51,22 @@ const AgentsDashboard = ({ user }) => {
                         }),
                     }
                 );
+                if(response.statusText == "Unauthorized"){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Cash In Failed",
+                        text: "Invalid PIN. Please try again.",
+                    });
+                    return;
+                }
+                if(response.statusText == "Not Found"){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Cash In Failed",
+                        text: "User not found. Please check the mobile number.",
+                    });
+                    return;
+                }
                 if (response.ok) {
                     Swal.fire({
                         icon: "success",
@@ -65,6 +81,7 @@ const AgentsDashboard = ({ user }) => {
                     });
                 }
             } catch (error) {
+                console.log(error)
                 Swal.fire({
                     icon: "error",
                     title: "Cash In Failed",
